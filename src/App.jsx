@@ -122,7 +122,7 @@ Return this exact JSON format:
 }`;
 
 export default function HoleyHikerQuiz() {
-  const [phase, setPhase] = useState("intro"); // intro | quiz | loading | result
+  const [phase, setPhase] = useState("intro");
   const [currentQ, setCurrentQ] = useState(0);
   const [answers, setAnswers] = useState({});
   const [result, setResult] = useState(null);
@@ -158,7 +158,7 @@ export default function HoleyHikerQuiz() {
     }).join("\n");
 
     try {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
+      const response = await fetch("/api/recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -255,7 +255,7 @@ export default function HoleyHikerQuiz() {
               <div style={styles.divider} />
               <p style={styles.reasoning}>{result.reasoning}</p>
               <p style={styles.signoff}>— {result.signoff}</p>
-              <a
+              
                 href="https://holeyhiker.com"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -282,7 +282,6 @@ export default function HoleyHikerQuiz() {
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap');
-        
         @keyframes bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-8px); }
@@ -340,20 +339,8 @@ const styles = {
     color: "#1a1a1a",
     lineHeight: 1.1,
   },
-  subtitle: {
-    textAlign: "center",
-    color: "#666",
-    fontSize: "14px",
-    marginBottom: "24px",
-    fontStyle: "italic",
-  },
-  body: {
-    fontSize: "15px",
-    lineHeight: 1.7,
-    color: "#333",
-    marginBottom: "32px",
-    textAlign: "center",
-  },
+  subtitle: { textAlign: "center", color: "#666", fontSize: "14px", marginBottom: "24px", fontStyle: "italic" },
+  body: { fontSize: "15px", lineHeight: 1.7, color: "#333", marginBottom: "32px", textAlign: "center" },
   btn: {
     display: "block",
     width: "100%",
@@ -367,32 +354,13 @@ const styles = {
     fontFamily: "'DM Sans', sans-serif",
     cursor: "pointer",
     boxShadow: "4px 4px 0 #1a1a1a",
-    transition: "transform 0.1s, box-shadow 0.1s",
     marginBottom: "12px",
   },
   fine: { textAlign: "center", fontSize: "11px", color: "#aaa", margin: 0 },
-  progressBar: {
-    height: "4px",
-    background: "#eee",
-    borderRadius: "2px",
-    marginBottom: "24px",
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    background: "#f5c842",
-    transition: "width 0.4s ease",
-    borderRadius: "2px",
-  },
+  progressBar: { height: "4px", background: "#eee", borderRadius: "2px", marginBottom: "24px", overflow: "hidden" },
+  progressFill: { height: "100%", background: "#f5c842", transition: "width 0.4s ease", borderRadius: "2px" },
   qCount: { fontSize: "11px", color: "#999", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "12px" },
-  question: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: "26px",
-    fontWeight: 700,
-    color: "#1a1a1a",
-    marginBottom: "8px",
-    lineHeight: 1.2,
-  },
+  question: { fontFamily: "'Playfair Display', serif", fontSize: "26px", fontWeight: 700, color: "#1a1a1a", marginBottom: "8px", lineHeight: 1.2 },
   qSub: { fontSize: "13px", color: "#888", fontStyle: "italic", marginBottom: "28px" },
   options: { display: "flex", flexDirection: "column", gap: "10px" },
   optBtn: {
@@ -409,87 +377,18 @@ const styles = {
     transition: "background 0.15s",
     boxShadow: "3px 3px 0 #1a1a1a",
   },
-  loadingEmoji: {
-    fontSize: "56px",
-    textAlign: "center",
-    marginBottom: "16px",
-    animation: "bounce 1.2s ease-in-out infinite",
-  },
-  loadingText: {
-    fontFamily: "'Playfair Display', serif",
-    textAlign: "center",
-    fontSize: "28px",
-    margin: "0 0 8px",
-  },
+  loadingEmoji: { fontSize: "56px", textAlign: "center", marginBottom: "16px", animation: "bounce 1.2s ease-in-out infinite" },
+  loadingText: { fontFamily: "'Playfair Display', serif", textAlign: "center", fontSize: "28px", margin: "0 0 8px" },
   dots: { display: "flex", justifyContent: "center", gap: "8px", marginTop: "24px" },
-  dot: {
-    width: "10px",
-    height: "10px",
-    background: "#f5c842",
-    borderRadius: "50%",
-    border: "2px solid #1a1a1a",
-    display: "inline-block",
-    animation: "pulse 1s ease-in-out infinite",
-  },
+  dot: { width: "10px", height: "10px", background: "#f5c842", borderRadius: "50%", border: "2px solid #1a1a1a", display: "inline-block", animation: "pulse 1s ease-in-out infinite" },
   resultEmoji: { fontSize: "56px", textAlign: "center", marginBottom: "8px" },
-  ribbon: {
-    textAlign: "center",
-    fontSize: "11px",
-    letterSpacing: "0.12em",
-    textTransform: "uppercase",
-    color: "#888",
-    marginBottom: "8px",
-  },
-  resultTitle: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: "30px",
-    fontWeight: 900,
-    textAlign: "center",
-    color: "#1a1a1a",
-    margin: "0 0 16px",
-    lineHeight: 1.15,
-  },
-  headline: {
-    textAlign: "center",
-    fontSize: "15px",
-    fontStyle: "italic",
-    color: "#444",
-    marginBottom: "20px",
-    lineHeight: 1.5,
-  },
+  ribbon: { textAlign: "center", fontSize: "11px", letterSpacing: "0.12em", textTransform: "uppercase", color: "#888", marginBottom: "8px" },
+  resultTitle: { fontFamily: "'Playfair Display', serif", fontSize: "30px", fontWeight: 900, textAlign: "center", color: "#1a1a1a", margin: "0 0 16px", lineHeight: 1.15 },
+  headline: { textAlign: "center", fontSize: "15px", fontStyle: "italic", color: "#444", marginBottom: "20px", lineHeight: 1.5 },
   divider: { height: "2px", background: "#1a1a1a", margin: "20px 0" },
   reasoning: { fontSize: "15px", lineHeight: 1.75, color: "#333", marginBottom: "16px" },
-  signoff: {
-    fontSize: "13px",
-    color: "#888",
-    fontStyle: "italic",
-    marginBottom: "28px",
-    borderLeft: "3px solid #f5c842",
-    paddingLeft: "12px",
-  },
-  buyBtn: {
-    display: "block",
-    background: "#f5c842",
-    color: "#1a1a1a",
-    border: "2px solid #1a1a1a",
-    borderRadius: "2px",
-    padding: "16px 24px",
-    fontSize: "16px",
-    fontWeight: 700,
-    textAlign: "center",
-    textDecoration: "none",
-    boxShadow: "4px 4px 0 #1a1a1a",
-    marginBottom: "12px",
-  },
-  retakeBtn: {
-    display: "block",
-    width: "100%",
-    background: "transparent",
-    color: "#999",
-    border: "none",
-    fontSize: "12px",
-    cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
-    padding: "8px",
-  },
+  signoff: { fontSize: "13px", color: "#888", fontStyle: "italic", marginBottom: "28px", borderLeft: "3px solid #f5c842", paddingLeft: "12px" },
+  buyBtn: { display: "block", background: "#f5c842", color: "#1a1a1a", border: "2px solid #1a1a1a", borderRadius: "2px", padding: "16px 24px", fontSize: "16px", fontWeight: 700, textAlign: "center", textDecoration: "none", boxShadow: "4px 4px 0 #1a1a1a", marginBottom: "12px" },
+  retakeBtn: { display: "block", width: "100%", background: "transparent", color: "#999", border: "none", fontSize: "12px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", padding: "8px" },
   error: { color: "red", textAlign: "center" },
+};
