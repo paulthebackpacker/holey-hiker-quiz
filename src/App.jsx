@@ -261,7 +261,7 @@ export default function HoleyHikerQuiz() {
                 rel="noopener noreferrer"
                 style={styles.buyBtn}
               >
-                Get My Bidet →
+                Get My Bidet 
               </a>
               <button
                 style={styles.retakeBtn}
