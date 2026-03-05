@@ -1,21 +1,21 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 
 const PRODUCTS = {
-  og: { name: "The OG Holey Hiker Backpacking Bidet", url: "https://holeyhiker.com", ribbon: "The Classic", emoji: "🏆" },
-  thruHiker: { name: "Thru Hiker Bidet", url: "https://holeyhiker.com", ribbon: "Thru Hiker Approved", emoji: "🥾" },
-  everyDay: { name: "The Every Day Bidet", url: "https://holeyhiker.com", ribbon: "For Every Single Day", emoji: "📅" },
-  leftHanded: { name: "The Left-Handed Bidet", url: "https://holeyhiker.com", ribbon: "The Resistance Has a Product Now", emoji: "✊" },
-  lumberjack: { name: "I Wanna Be a Lumberjack Bidet", url: "https://holeyhiker.com", ribbon: "Perfect for Monty Python Fans", emoji: "🪓" },
-  brickBuilder: { name: "Bidet for Brick Builders", url: "https://holeyhiker.com", ribbon: "Satisfying Click Not Included", emoji: "🧱" },
-  bugOut: { name: "Bug Out Bag Bidet", url: "https://holeyhiker.com", ribbon: "Perfect for Preppers", emoji: "🎒" },
-  barkLee: { name: "Bark Lee Ultramarathon Chafe Slaying Bidet", url: "https://holeyhiker.com", ribbon: "Chafe Slayer", emoji: "🏃" },
-  cyclist: { name: "One More Hill Bidet", url: "https://holeyhiker.com", ribbon: "For Cyclists", emoji: "🚴" },
-  beachBum: { name: "Beach Bum Bidet", url: "https://holeyhiker.com", ribbon: "Sand In Places You Don't Want", emoji: "🏖️" },
-  poopyKid: { name: "Parent of a Poopy Kid Bidet", url: "https://holeyhiker.com", ribbon: "You Know Why", emoji: "👶" },
-  purpleRain: { name: "Purple Rain Bidet", url: "https://holeyhiker.com", ribbon: "Party Like It's 1999", emoji: "💜" },
-  blastmaster: { name: "BlastMaster 3000", url: "https://holeyhiker.com", ribbon: "For Hard Hat Hygiene", emoji: "🦺" },
-  cnoc: { name: "Squeeze and Please CNOC Package", url: "https://holeyhiker.com", ribbon: "You Asked. Repeatedly.", emoji: "🫸" },
-  threepack: { name: "3 for $33", url: "https://holeyhiker.com", ribbon: "Welcome to the Ministry", emoji: "🙌" },
+  og: { name: "The OG Holey Hiker Backpacking Bidet", ribbon: "The Classic", emoji: "🏆" },
+  thruHiker: { name: "Thru Hiker Bidet", ribbon: "Thru Hiker Approved", emoji: "🥾" },
+  everyDay: { name: "The Every Day Bidet", ribbon: "For Every Single Day", emoji: "📅" },
+  leftHanded: { name: "The Left-Handed Bidet", ribbon: "The Resistance Has a Product Now", emoji: "✊" },
+  lumberjack: { name: "I Wanna Be a Lumberjack Bidet", ribbon: "Perfect for Monty Python Fans", emoji: "🪓" },
+  brickBuilder: { name: "Bidet for Brick Builders", ribbon: "Satisfying Click Not Included", emoji: "🧱" },
+  bugOut: { name: "Bug Out Bag Bidet", ribbon: "Perfect for Preppers", emoji: "🎒" },
+  barkLee: { name: "Bark Lee Ultramarathon Chafe Slaying Bidet", ribbon: "Chafe Slayer", emoji: "🏃" },
+  cyclist: { name: "One More Hill Bidet", ribbon: "For Cyclists", emoji: "🚴" },
+  beachBum: { name: "Beach Bum Bidet", ribbon: "Sand In Places You Don't Want", emoji: "🏖️" },
+  poopyKid: { name: "Parent of a Poopy Kid Bidet", ribbon: "You Know Why", emoji: "👶" },
+  purpleRain: { name: "Purple Rain Bidet", ribbon: "Party Like It's 1999", emoji: "💜" },
+  blastmaster: { name: "BlastMaster 3000", ribbon: "For Hard Hat Hygiene", emoji: "🦺" },
+  cnoc: { name: "Squeeze and Please CNOC Package", ribbon: "You Asked. Repeatedly.", emoji: "🫸" },
+  threepack: { name: "3 for $33", ribbon: "Welcome to the Ministry", emoji: "🙌" },
 };
 
 const QUESTIONS = [
@@ -96,7 +96,7 @@ const QUESTIONS = [
 
 const SYSTEM_PROMPT = `You are the Holey Hiker Bidet Quiz Oracle. You are irreverent, absurdist, genuinely warm, and you run a one-man bidet operation out of a garage in Connecticut.
 
-Based on the user's quiz answers, recommend exactly ONE product from this list. Return ONLY valid JSON — no markdown, no backticks, no extra text.
+Based on the user's quiz answers, recommend exactly ONE product from this list. Return ONLY valid JSON with no markdown, no backticks, no extra text.
 
 Products available:
 - og: The OG Holey Hiker Backpacking Bidet (classic, works on Smartwater bottle, the original)
@@ -111,7 +111,7 @@ Products available:
 - beachBum: Beach Bum Bidet (for beach people, sand removal, underrated)
 - purpleRain: Purple Rain Bidet (for people who have strong aesthetic opinions and appreciation for Prince)
 - blastmaster: BlastMaster 3000 (for construction workers, hard hat crowd)
-- threepack: 3 for $33 (for evangelists who can't stop talking about it)
+- threepack: 3 for $33 (for evangelists who cannot stop talking about it)
 
 Return this exact JSON format:
 {
@@ -138,7 +138,6 @@ export default function HoleyHikerQuiz() {
     const newAnswers = { ...answers, [question.id]: value };
     setAnswers(newAnswers);
     setAnimating(true);
-
     setTimeout(() => {
       if (currentQ < QUESTIONS.length - 1) {
         setCurrentQ(currentQ + 1);
@@ -154,7 +153,7 @@ export default function HoleyHikerQuiz() {
     const summary = QUESTIONS.map((q) => {
       const ans = finalAnswers[q.id];
       const option = q.options.find((o) => o.value === ans);
-      return `${q.text} → ${option?.label || ans}`;
+      return q.text + " -> " + (option ? option.label : ans);
     }).join("\n");
 
     try {
@@ -165,12 +164,13 @@ export default function HoleyHikerQuiz() {
           model: "claude-sonnet-4-20250514",
           max_tokens: 1000,
           system: SYSTEM_PROMPT,
-          messages: [{ role: "user", content: `Quiz answers:\n${summary}` }],
+          messages: [{ role: "user", content: "Quiz answers:\n" + summary }],
         }),
       });
       const data = await response.json();
-      const raw = data.content?.find((b) => b.type === "text")?.text || "{}";
-      const parsed = JSON.parse(raw.replace(/```json|```/g, "").trim());
+      const raw = data.content && data.content.find((b) => b.type === "text") ? data.content.find((b) => b.type === "text").text : "{}";
+      const clean = raw.replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(clean);
       setResult(parsed);
       setPhase("result");
     } catch (e) {
@@ -189,28 +189,24 @@ export default function HoleyHikerQuiz() {
         <div style={styles.card}>
           <div style={styles.logo}>🚿</div>
           <h1 style={styles.title}>Which Bidet Are You?</h1>
-          <p style={styles.subtitle}>
-            A deeply scientific personality assessment from the garage in Connecticut.
-          </p>
+          <p style={styles.subtitle}>A deeply scientific personality assessment from the garage in Connecticut.</p>
           <p style={styles.body}>
-            Seven questions stand between you and the bidet destiny you didn't know you were owed.
+            Seven questions stand between you and the bidet destiny you did not know you were owed.
             Some questions will seem unrelated to butt hygiene. They are not.
           </p>
           <button style={styles.btn} onClick={() => setPhase("quiz")}>
-            I'm Ready for My Truth
+            I am Ready for My Truth
           </button>
           <p style={styles.fine}>No peanut butter was harmed in the making of this quiz.</p>
         </div>
       )}
 
       {phase === "quiz" && question && (
-        <div style={{ ...styles.card, opacity: animating ? 0 : 1, transition: "opacity 0.3s ease" }}>
+        <div style={Object.assign({}, styles.card, { opacity: animating ? 0 : 1, transition: "opacity 0.3s ease" })}>
           <div style={styles.progressBar}>
-            <div style={{ ...styles.progressFill, width: `${progress}%` }} />
+            <div style={Object.assign({}, styles.progressFill, { width: progress + "%" })} />
           </div>
-          <div style={styles.qCount}>
-            Question {currentQ + 1} of {QUESTIONS.length}
-          </div>
+          <div style={styles.qCount}>Question {currentQ + 1} of {QUESTIONS.length}</div>
           <h2 style={styles.question}>{question.text}</h2>
           <p style={styles.qSub}>{question.subtext}</p>
           <div style={styles.options}>
@@ -219,8 +215,8 @@ export default function HoleyHikerQuiz() {
                 key={opt.value}
                 style={styles.optBtn}
                 onClick={() => handleAnswer(opt.value)}
-                onMouseEnter={(e) => (e.target.style.background = "#f5f0e8")}
-                onMouseLeave={(e) => (e.target.style.background = "white")}
+                onMouseEnter={(e) => { e.target.style.background = "#f5f0e8"; }}
+                onMouseLeave={(e) => { e.target.style.background = "white"; }}
               >
                 {opt.label}
               </button>
@@ -235,19 +231,18 @@ export default function HoleyHikerQuiz() {
           <h2 style={styles.loadingText}>Consulting the garage...</h2>
           <p style={styles.body}>Paul is reviewing your psychological profile.</p>
           <div style={styles.dots}>
-            <span style={{ ...styles.dot, animationDelay: "0s" }} />
-            <span style={{ ...styles.dot, animationDelay: "0.2s" }} />
-            <span style={{ ...styles.dot, animationDelay: "0.4s" }} />
+            <span style={Object.assign({}, styles.dot, { animationDelay: "0s" })} />
+            <span style={Object.assign({}, styles.dot, { animationDelay: "0.2s" })} />
+            <span style={Object.assign({}, styles.dot, { animationDelay: "0.4s" })} />
           </div>
         </div>
       )}
 
       {phase === "result" && (
         <div style={styles.card} ref={resultRef}>
-          {error ? (
-            <p style={styles.error}>{error}</p>
-          ) : product && result ? (
-            <>
+          {error && <p style={styles.error}>{error}</p>}
+          {!error && product && result && (
+            <div>
               <div style={styles.resultEmoji}>{product.emoji}</div>
               <div style={styles.ribbon}>{product.ribbon}</div>
               <h2 style={styles.resultTitle}>{product.name}</h2>
@@ -255,14 +250,12 @@ export default function HoleyHikerQuiz() {
               <div style={styles.divider} />
               <p style={styles.reasoning}>{result.reasoning}</p>
               <p style={styles.signoff}>— {result.signoff}</p>
-              
-                href="https://holeyhiker.com"
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
                 style={styles.buyBtn}
+                onClick={() => window.open("https://holeyhiker.com", "_blank")}
               >
-                Get My Bidet 
-              </a>
+                Get My Bidet
+              </button>
               <button
                 style={styles.retakeBtn}
                 onClick={() => {
@@ -275,87 +268,30 @@ export default function HoleyHikerQuiz() {
               >
                 Retake (Different Answers Won't Help You)
               </button>
-            </>
-          ) : null}
+            </div>
+          )}
         </div>
       )}
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&display=swap');
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 0.3; }
-          50% { opacity: 1; }
-        }
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
       `}</style>
     </div>
   );
 }
 
 const styles = {
-  root: {
-    minHeight: "100vh",
-    background: "#fdf8f0",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontFamily: "'DM Sans', sans-serif",
-    padding: "20px",
-    position: "relative",
-  },
-  grain: {
-    position: "fixed",
-    inset: 0,
-    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E")`,
-    pointerEvents: "none",
-    zIndex: 0,
-  },
-  card: {
-    background: "white",
-    borderRadius: "4px",
-    border: "2px solid #1a1a1a",
-    padding: "48px 40px",
-    maxWidth: "560px",
-    width: "100%",
-    boxShadow: "8px 8px 0 #1a1a1a",
-    position: "relative",
-    zIndex: 1,
-    animation: "fadeUp 0.5s ease both",
-  },
+  root: { minHeight: "100vh", background: "#fdf8f0", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif", padding: "20px", position: "relative" },
+  grain: { position: "fixed", inset: 0, backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E\")", pointerEvents: "none", zIndex: 0 },
+  card: { background: "white", borderRadius: "4px", border: "2px solid #1a1a1a", padding: "48px 40px", maxWidth: "560px", width: "100%", boxShadow: "8px 8px 0 #1a1a1a", position: "relative", zIndex: 1, animation: "fadeUp 0.5s ease both" },
   logo: { fontSize: "48px", textAlign: "center", marginBottom: "16px" },
-  title: {
-    fontFamily: "'Playfair Display', serif",
-    fontSize: "36px",
-    fontWeight: 900,
-    textAlign: "center",
-    margin: "0 0 8px",
-    color: "#1a1a1a",
-    lineHeight: 1.1,
-  },
+  title: { fontFamily: "'Playfair Display', serif", fontSize: "36px", fontWeight: 900, textAlign: "center", margin: "0 0 8px", color: "#1a1a1a", lineHeight: 1.1 },
   subtitle: { textAlign: "center", color: "#666", fontSize: "14px", marginBottom: "24px", fontStyle: "italic" },
   body: { fontSize: "15px", lineHeight: 1.7, color: "#333", marginBottom: "32px", textAlign: "center" },
-  btn: {
-    display: "block",
-    width: "100%",
-    background: "#f5c842",
-    color: "#1a1a1a",
-    border: "2px solid #1a1a1a",
-    borderRadius: "2px",
-    padding: "16px 24px",
-    fontSize: "16px",
-    fontWeight: 700,
-    fontFamily: "'DM Sans', sans-serif",
-    cursor: "pointer",
-    boxShadow: "4px 4px 0 #1a1a1a",
-    marginBottom: "12px",
-  },
+  btn: { display: "block", width: "100%", background: "#f5c842", color: "#1a1a1a", border: "2px solid #1a1a1a", borderRadius: "2px", padding: "16px 24px", fontSize: "16px", fontWeight: 700, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", boxShadow: "4px 4px 0 #1a1a1a", marginBottom: "12px" },
   fine: { textAlign: "center", fontSize: "11px", color: "#aaa", margin: 0 },
   progressBar: { height: "4px", background: "#eee", borderRadius: "2px", marginBottom: "24px", overflow: "hidden" },
   progressFill: { height: "100%", background: "#f5c842", transition: "width 0.4s ease", borderRadius: "2px" },
@@ -363,20 +299,7 @@ const styles = {
   question: { fontFamily: "'Playfair Display', serif", fontSize: "26px", fontWeight: 700, color: "#1a1a1a", marginBottom: "8px", lineHeight: 1.2 },
   qSub: { fontSize: "13px", color: "#888", fontStyle: "italic", marginBottom: "28px" },
   options: { display: "flex", flexDirection: "column", gap: "10px" },
-  optBtn: {
-    background: "white",
-    border: "2px solid #1a1a1a",
-    borderRadius: "2px",
-    padding: "14px 18px",
-    fontSize: "14px",
-    fontFamily: "'DM Sans', sans-serif",
-    fontWeight: 500,
-    color: "#1a1a1a",
-    cursor: "pointer",
-    textAlign: "left",
-    transition: "background 0.15s",
-    boxShadow: "3px 3px 0 #1a1a1a",
-  },
+  optBtn: { background: "white", border: "2px solid #1a1a1a", borderRadius: "2px", padding: "14px 18px", fontSize: "14px", fontFamily: "'DM Sans', sans-serif", fontWeight: 500, color: "#1a1a1a", cursor: "pointer", textAlign: "left", transition: "background 0.15s", boxShadow: "3px 3px 0 #1a1a1a" },
   loadingEmoji: { fontSize: "56px", textAlign: "center", marginBottom: "16px", animation: "bounce 1.2s ease-in-out infinite" },
   loadingText: { fontFamily: "'Playfair Display', serif", textAlign: "center", fontSize: "28px", margin: "0 0 8px" },
   dots: { display: "flex", justifyContent: "center", gap: "8px", marginTop: "24px" },
@@ -388,7 +311,7 @@ const styles = {
   divider: { height: "2px", background: "#1a1a1a", margin: "20px 0" },
   reasoning: { fontSize: "15px", lineHeight: 1.75, color: "#333", marginBottom: "16px" },
   signoff: { fontSize: "13px", color: "#888", fontStyle: "italic", marginBottom: "28px", borderLeft: "3px solid #f5c842", paddingLeft: "12px" },
-  buyBtn: { display: "block", background: "#f5c842", color: "#1a1a1a", border: "2px solid #1a1a1a", borderRadius: "2px", padding: "16px 24px", fontSize: "16px", fontWeight: 700, textAlign: "center", textDecoration: "none", boxShadow: "4px 4px 0 #1a1a1a", marginBottom: "12px" },
+  buyBtn: { display: "block", width: "100%", background: "#f5c842", color: "#1a1a1a", border: "2px solid #1a1a1a", borderRadius: "2px", padding: "16px 24px", fontSize: "16px", fontWeight: 700, textAlign: "center", boxShadow: "4px 4px 0 #1a1a1a", marginBottom: "12px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif" },
   retakeBtn: { display: "block", width: "100%", background: "transparent", color: "#999", border: "none", fontSize: "12px", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", padding: "8px" },
   error: { color: "red", textAlign: "center" },
 };
